@@ -1,15 +1,29 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">Login</router-link> |
-      <router-link to="/Register">Registrate</router-link> |
-      <router-link to="/Productos">Productos</router-link> |
-      <router-link to="/Info">Info</router-link> |
-      <router-link to="/Carrito">Carrito</router-link>
+      <div v-if="!user.name">
+        <router-link to="/">Login</router-link> |
+        <router-link to="/Register">Registrate</router-link> |
+      </div>
+      <div v-if="user.name">
+        <router-link to="/Productos">Productos</router-link> |
+        <router-link to="/Info">Info</router-link> |
+        <router-link to="/Carrito">Carrito</router-link>
+      </div>
     </nav>
-    <router-view/>
+    <router-view />
   </div>
 </template>
+
+<script>
+import { mapState } from "vuex";
+
+export default {
+  computed: {
+    ...mapState(["user"]),
+  },
+};
+</script>
 
 <style>
 #app {
