@@ -30,6 +30,25 @@
         <button type="submit">Crear</button>
       </form>
     </div>
+    <div class="displayProducts">
+      <h1>Productos</h1>
+      <div class="card-container">
+        <div v-for="producto in productos" :key="producto.id">
+          <div class="card">
+            <img :src="producto.imagen" class="card-img-top" />
+            <div class="card-body">
+              <h5 class="card-title">{{ producto.nombre }}</h5>
+              <p class="card-text">Marca: {{ producto.marca }}</p>
+              <p class="card-text">Precio: {{ producto.precio }}</p>
+              <div class="btn-group">
+                <button class="btn btn-primary">Comprar</button>
+                <button class="btn btn-secondary">Info</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,6 +62,7 @@ export default {
 
   data() {
     return {
+      productos: [],
       nombre: "",
       marca: "",
       imagen: "",
@@ -54,7 +74,9 @@ export default {
     ...mapState(["user"]),
   },
 
-  mounted() {},
+  mounted() {
+    this.obtenerProductos();
+  },
 
   methods: {
     ...mapActions(["clearUser"]),
@@ -83,6 +105,17 @@ export default {
       } catch (error) {
         console.error(error);
         alert("Hubo un error al crear el producto");
+      }
+    },
+    async obtenerProductos() {
+      try {
+        const respuesta = await axios.get(
+          "https://63d84aeebaa0f79e09a6fb8b.mockapi.io/Productos"
+        );
+        this.productos = respuesta.data;
+      } catch (error) {
+        console.error(error);
+        alert("Hubo un error al obtener los productos");
       }
     },
   },
@@ -117,5 +150,24 @@ button {
   border: none;
   cursor: pointer;
   margin: 2px;
+}
+.card {
+  width: 300px;
+  height: 400px;
+  display: inline-block;
+  margin: 10px;
+}
+.card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.displayProducts{
+  margin-top: 30px;
 }
 </style>
