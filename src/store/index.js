@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex)
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
       isAdmin: false
     },
   },
+  plugins: [createPersistedState()],
   getters: {
     user: state => state.user,
     precioFinal(state) {
@@ -36,7 +38,10 @@ export default new Vuex.Store({
           precioTotal: parseInt(producto.precio * producto.cantidad)
         });
       }
-    }
+    },
+    eliminarProducto(state, index) {
+      state.carrito.splice(index, 1);
+    },
   },
   actions: {
     setUser({ commit }, user) {
@@ -48,7 +53,10 @@ export default new Vuex.Store({
     },
     agregarAlCarrito({ commit }, producto) {
       commit("agregarProducto", producto);
-    }
+    },
+    eliminarProducto({ commit }, index) {
+      commit("eliminarProducto", index);
+    },
   },
   modules: {
   }

@@ -8,6 +8,7 @@
           <th>Marca</th>
           <th>Cantidad</th>
           <th>Precio</th>
+          <th>Accion</th>
           <th>Precio final</th>
         </tr>
       </thead>
@@ -17,34 +18,113 @@
           <td>{{ producto.marca }}</td>
           <td>{{ producto.cantidad }}</td>
           <td>{{ producto.precio }}</td>
+          <td><button @click="eliminarProducto(index)">Eliminar</button></td>
+          <td></td>
         </tr>
         <th></th>
         <th></th>
         <th></th>
         <th></th>
-        <th>Precio final: {{precioFinal}}</th>
+        <th></th>
+        <th>Precio final: {{ precioFinal }}</th>
       </tbody>
     </table>
+
+    <form @submit.prevent="realizarCompra">
+      <div>
+        <label for="nombreCompleto">Nombre completo:</label>
+        <input type="text" id="nombreCompleto" v-model="form.nombreCompleto" />
+      </div>
+      <div>
+        <label for="provincia">Provincia:</label>
+        <input type="text" id="provincia" v-model="form.provincia" />
+      </div>
+      <div>
+        <label for="localidad">Localidad:</label>
+        <input type="text" id="localidad" v-model="form.localidad" />
+      </div>
+      <div>
+        <label for="codigoPostal">Código Postal:</label>
+        <input type="text" id="codigoPostal" v-model="form.codigoPostal" />
+      </div>
+      <div>
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" v-model="form.direccion" />
+      </div>
+      <button type="submit">Realizar compra</button>
+    </form>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import { mapState } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   name: "CarritoComponent",
 
   data() {
-    return {};
+    return {
+      form: {
+        nombreCompleto: "",
+        provincia: "",
+        localidad: "",
+        codigoPostal: "",
+        direccion: "",
+        precioFinal: "",
+      },
+    };
   },
   computed: {
-    ...mapState(['carrito']),
+    ...mapState(["carrito"]),
     ...mapGetters(["precioFinal"]),
   },
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    eliminarProducto(index) {
+      this.$store.dispatch("eliminarProducto", index);
+    },
+    async realizarCompra() {
+      if (
+        !this.form.nombreCompleto ||
+        !this.form.provincia ||
+        !this.form.localidad ||
+        !this.form.codigoPostal ||
+        !this.form.direccion
+      ) {
+        return alert("Por favor, complete todos los campos del formulario");
+      }
+
+      try {
+        // Enviar los datos de la compra a la API
+        await axios.post(
+          "https://63d84aeebaa0f79e09a6fb8b.mockapi.io/Pedidos",
+          {
+            nombreCompleto: this.form.nombreCompleto,
+            provincia: this.form.provincia,
+            localidad: this.form.localidad,
+            codigoPostal: this.form.codigoPostal,
+            direccion: this.form.direccion,
+            productos: this.carrito,
+          }
+        );
+
+        // Resetear los datos del formulario
+        this.form.nombreCompleto = "";
+        this.form.provincia = "";
+        this.form.localidad = "";
+        this.form.codigoPostal = "";
+        this.form.direccion = "";
+
+        // Mostrar un mensaje de éxito al usuario
+        alert("La compra se realizó con éxito");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
 };
 </script>
 
@@ -61,7 +141,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
@@ -73,5 +154,23 @@ th {
 
 tr:nth-child(even) {
   background-color: #f2f2f2;
+}
+form {
+  width: 500px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+}
+
+input[type="text"] {
+  padding: 10px;
+  width: 100%;
 }
 </style>
