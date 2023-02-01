@@ -51,7 +51,15 @@
         <label for="direccion">Dirección:</label>
         <input type="text" id="direccion" v-model="form.direccion" />
       </div>
-      <button type="submit">Realizar compra</button>
+      <button class="specialButton" type="submit">Realizar compra</button>
+    </form>
+
+    <form v-if="isAdmin" @submit.prevent="eliminarPedido">
+      <div>
+        <label for="id">ID del pedido a eliminar:</label>
+        <input type="text" id="id" v-model="id" />
+      </div>
+      <button class="specialButton" type="submit">Eliminar pedido</button>
     </form>
   </div>
 </template>
@@ -65,6 +73,7 @@ export default {
 
   data() {
     return {
+      id: "",
       form: {
         nombreCompleto: "",
         provincia: "",
@@ -78,6 +87,10 @@ export default {
   computed: {
     ...mapState(["carrito"]),
     ...mapGetters(["precioFinal"]),
+    ...mapState(["user"]),
+    isAdmin() {
+      return this.$store.state.user.isAdmin;
+    },
   },
 
   mounted() {},
@@ -120,6 +133,20 @@ export default {
 
         // Mostrar un mensaje de éxito al usuario
         alert("La compra se realizó con éxito");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async eliminarPedido() {
+      if (!window.confirm("¿Está seguro de que desea eliminar el pedido?")) {
+        return;
+      }
+
+      try {
+        await axios.delete(
+          `https://63d84aeebaa0f79e09a6fb8b.mockapi.io/Pedidos/${this.id}`
+        );
+        alert("El pedido se ha eliminado correctamente");
       } catch (error) {
         console.error(error);
       }
@@ -172,5 +199,8 @@ label {
 input[type="text"] {
   padding: 10px;
   width: 100%;
+}
+.specialButton{
+    margin: 5px;
 }
 </style>
