@@ -41,7 +41,7 @@
               <p class="card-text">Marca: {{ producto.marca }}</p>
               <p class="card-text">Precio: {{ producto.precio }}</p>
               <div class="btn-group">
-                <button class="btn btn-primary">Comprar</button>
+                <button class="btn btn-primary" @click="agregarAlCarrito(producto)">Comprar</button>
                 <button
                   class="btn btn-secondary"
                   @click="infoHandler(producto)"
@@ -83,6 +83,7 @@ export default {
     isAdmin() {
       return this.$store.state.user.isAdmin;
     },
+    ...mapState(["productos"])
   },
 
   mounted() {
@@ -154,6 +155,7 @@ export default {
         }
       }
     },
+    ...mapActions(["agregarAlCarrito"])
   },
 };
 </script>
