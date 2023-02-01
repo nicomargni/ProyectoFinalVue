@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate';
+import Toastify from 'toastify-js'
 
 Vue.use(Vuex)
 
@@ -42,6 +43,9 @@ export default new Vuex.Store({
     eliminarProducto(state, index) {
       state.carrito.splice(index, 1);
     },
+    vaciarCarrito(state) {
+      state.carrito = [];
+    },
   },
   actions: {
     setUser({ commit }, user) {
@@ -53,9 +57,25 @@ export default new Vuex.Store({
     },
     agregarAlCarrito({ commit }, producto) {
       commit("agregarProducto", producto);
+      Toastify({
+        text: "Producto añadido correctamente",
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: 'right',
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+      }).showToast();
     },
     eliminarProducto({ commit }, index) {
       commit("eliminarProducto", index);
+      Toastify({
+        text: "Producto eliminado correctamente",
+        duration: 2000,
+        close: true,
+        gravity: "top",
+        position: 'right',
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+      }).showToast();
     },
   },
   modules: {

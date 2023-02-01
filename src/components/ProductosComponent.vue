@@ -41,14 +41,24 @@
               <p class="card-text">Marca: {{ producto.marca }}</p>
               <p class="card-text">Precio: {{ producto.precio }}</p>
               <div class="btn-group">
-                <button class="btn btn-primary" @click="agregarAlCarrito(producto)">Comprar</button>
+                <button
+                  v-if="!isAdmin"
+                  class="btn btn-primary"
+                  @click="agregarAlCarrito(producto)"
+                >
+                  Comprar
+                </button>
                 <button
                   class="btn btn-secondary"
                   @click="infoHandler(producto)"
                 >
                   Info
                 </button>
-                <button v-if="isAdmin" class="btn btn-danger" @click="removeProduct(producto)">
+                <button
+                  v-if="isAdmin"
+                  class="btn btn-danger"
+                  @click="removeProduct(producto)"
+                >
                   Eliminar
                 </button>
               </div>
@@ -64,6 +74,7 @@
 import { mapActions } from "vuex";
 import { mapState } from "vuex";
 import axios from "axios";
+import Toastify from 'toastify-js'
 
 export default {
   name: "ProductosComponent",
@@ -83,7 +94,7 @@ export default {
     isAdmin() {
       return this.$store.state.user.isAdmin;
     },
-    ...mapState(["productos"])
+    ...mapState(["productos"]),
   },
 
   mounted() {
@@ -94,6 +105,7 @@ export default {
     ...mapActions(["clearUser"]),
     logout() {
       this.clearUser();
+      this.$store.commit("vaciarCarrito");
       this.$router.push("/");
     },
     async crearProducto() {
@@ -149,13 +161,21 @@ export default {
             `https://63d84aeebaa0f79e09a6fb8b.mockapi.io/Productos/${producto.id}`
           );
           this.productos = this.productos.filter((p) => p.id !== producto.id);
+          Toastify({
+            text: "Producto eliminado correctamente",
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+          }).showToast();
         } catch (error) {
           console.error(error);
           alert("Hubo un error al eliminar el producto");
         }
       }
     },
-    ...mapActions(["agregarAlCarrito"])
+    ...mapActions(["agregarAlCarrito"]),
   },
 };
 </script>

@@ -77,7 +77,7 @@
               </li>
             </ul>
           </td>
-          <td>{{ precioFinal }}</td>
+          <td>{{ precioTotal }}</td>
         </tr>
       </tbody>
     </table>
@@ -120,7 +120,7 @@ export default {
     isAdmin() {
       return this.$store.state.user.isAdmin;
     },
-    precioFinal() {
+    precioTotal() {
       let precio = 0;
       this.pedidos.forEach((pedido) => {
         pedido.productos.forEach((producto) => {
