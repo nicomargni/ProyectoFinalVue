@@ -7,7 +7,7 @@
       </div>
       <div v-if="user.name">
         <router-link to="/Productos">Productos</router-link> |
-        <router-link to="/Info">Info</router-link> |
+        <a>Info</a> |
         <router-link to="/Carrito">Carrito</router-link>
       </div>
     </nav>

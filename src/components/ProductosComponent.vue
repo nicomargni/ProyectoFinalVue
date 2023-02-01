@@ -4,7 +4,7 @@
     <h3 v-if="user.isAdmin">Eres administrador</h3>
     <button @click="logout">Cerrar Sesión</button>
 
-    <div v-if="user.isAdmin">
+    <div v-if="user.isAdmin" class="crear">
       <form @submit.prevent="crearProducto">
         <h2>Crear Producto</h2>
         <div>
@@ -42,7 +42,15 @@
               <p class="card-text">Precio: {{ producto.precio }}</p>
               <div class="btn-group">
                 <button class="btn btn-primary">Comprar</button>
-                <button class="btn btn-secondary">Info</button>
+                <button
+                  class="btn btn-secondary"
+                  @click="infoHandler(producto)"
+                >
+                  Info
+                </button>
+                <button v-if="isAdmin" class="btn btn-danger" @click="removeProduct(producto)">
+                  Eliminar
+                </button>
               </div>
             </div>
           </div>
@@ -72,6 +80,9 @@ export default {
   },
   computed: {
     ...mapState(["user"]),
+    isAdmin() {
+      return this.$store.state.user.isAdmin;
+    },
   },
 
   mounted() {
@@ -118,6 +129,31 @@ export default {
         alert("Hubo un error al obtener los productos");
       }
     },
+    infoHandler(producto) {
+      this.$router.push({
+        path: "/Info",
+        query: {
+          producto: producto,
+        },
+      });
+    },
+    async removeProduct(producto) {
+      if (
+        confirm(
+          `Estás seguro de querer eliminar el producto ${producto.nombre}?`
+        )
+      ) {
+        try {
+          await axios.delete(
+            `https://63d84aeebaa0f79e09a6fb8b.mockapi.io/Productos/${producto.id}`
+          );
+          this.productos = this.productos.filter((p) => p.id !== producto.id);
+        } catch (error) {
+          console.error(error);
+          alert("Hubo un error al eliminar el producto");
+        }
+      }
+    },
   },
 };
 </script>
@@ -153,21 +189,23 @@ button {
 }
 .card {
   width: 300px;
-  height: 400px;
+  height: 450px;
   display: inline-block;
   margin: 10px;
 }
 .card-img-top {
   width: 100%;
   height: 200px;
-  object-fit: cover;
 }
 .card-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
-.displayProducts{
+.displayProducts {
   margin-top: 30px;
+}
+.crear {
+  margin: 20px;
 }
 </style>
