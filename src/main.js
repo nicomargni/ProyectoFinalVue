@@ -4,6 +4,10 @@ import store from './store'
 import router from './router'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Toastify from 'toastify-js'
+import 'toastify-js/src/toastify.css'
+
+Vue.use(Toastify);
 
 Vue.config.productionTip = false
 

@@ -1,7 +1,8 @@
 <template>
   <div class="carritoCompras">
-    <h1>Carrito de compras</h1>
-    <table>
+    <h1 v-if="!isAdmin">Carrito de compras</h1>
+    <h1 v-if="isAdmin">Lista de pedidos</h1>
+    <table v-if="!isAdmin">
       <thead>
         <tr>
           <th>Nombre</th>
@@ -30,7 +31,7 @@
       </tbody>
     </table>
 
-    <form @submit.prevent="realizarCompra">
+    <form v-if="!isAdmin" @submit.prevent="realizarCompra">
       <div>
         <label for="nombreCompleto">Nombre completo:</label>
         <input type="text" id="nombreCompleto" v-model="form.nombreCompleto" />
@@ -54,6 +55,33 @@
       <button class="specialButton" type="submit">Realizar compra</button>
     </form>
 
+    <table v-if="isAdmin" class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Provincia</th>
+          <th>Dirección</th>
+          <th>Nombre de los productos comprados</th>
+          <th>Precio final</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="pedido in pedidos" :key="pedido.id">
+          <td>{{ pedido.nombreCompleto }}</td>
+          <td>{{ pedido.provincia }}</td>
+          <td>{{ pedido.direccion }}</td>
+          <td>
+            <ul>
+              <li v-for="producto in pedido.productos" :key="producto.id">
+                {{ producto.nombre }}
+              </li>
+            </ul>
+          </td>
+          <td>{{ precioFinal }}</td>
+        </tr>
+      </tbody>
+    </table>
+
     <form v-if="isAdmin" @submit.prevent="eliminarPedido">
       <div>
         <label for="id">ID del pedido a eliminar:</label>
@@ -74,6 +102,7 @@ export default {
   data() {
     return {
       id: "",
+      pedidos: [],
       form: {
         nombreCompleto: "",
         provincia: "",
@@ -91,6 +120,23 @@ export default {
     isAdmin() {
       return this.$store.state.user.isAdmin;
     },
+    precioFinal() {
+      let precio = 0;
+      this.pedidos.forEach((pedido) => {
+        pedido.productos.forEach((producto) => {
+          precio += Number(producto.precio);
+        });
+      });
+      return precio;
+    },
+  },
+
+  created() {
+    axios
+      .get("https://63d84aeebaa0f79e09a6fb8b.mockapi.io/Pedidos")
+      .then((response) => {
+        this.pedidos = response.data;
+      });
   },
 
   mounted() {},
@@ -200,7 +246,7 @@ input[type="text"] {
   padding: 10px;
   width: 100%;
 }
-.specialButton{
-    margin: 5px;
+.specialButton {
+  margin: 5px;
 }
 </style>
