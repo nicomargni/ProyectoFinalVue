@@ -1,3 +1,5 @@
+// Si figura en github que 2 personas contribuyeron a este codigo, es porque tuve un problema con mi computadora, no me dejaba pasar de la bios, y tuve que usar la computadora de mi hermana, estaba usando github desktop pero no me di cuenta que estaba pusheando los archivos desde la cuenta de mi hermana
+
 
 Tecnologias utilizadas:
 
