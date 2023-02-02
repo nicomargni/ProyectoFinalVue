@@ -1,8 +1,3 @@
-//Nota: Este no es mi primer trabajo final de vue, como comente en la entrega en la plataforma de coder, el sabado pasado tuve un corte de luz importante
-en mi casa, y a mi computadora no se que es lo que le sucedio pero no me deja pasar de la bios, no tenia backup de mi proyecto y tuve que empezar todo
-desde cero usando la computadora de mi hermana codeando a la velocidad de la luz, pido disculpas si se ve feo o no se ve muy profesional..
-
-
 
 Tecnologias utilizadas:
 
